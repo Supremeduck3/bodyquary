@@ -154,17 +154,26 @@ app.get('/animais', (req, res) => {
       data: resultado
     });
 });
-app.get('/status', (req, res) => {
-    const { ano, } = req.query;
+app.get("/status", (req, res) => {
+  const { casa } = req.query;
     let resultado = bruxos;
   
-    if (ano) {
-      resultado = resultado.filter(b => b.ano == ano);
+    if (casa) {
+      resultado = resultado.filter(b => b.casa.toLowerCase() === casa.toLowerCase());
     }
-  
     res.status(200).json({
       total: resultado.length,
-      data: resultado
+      casa
+    })
+    const { material} = req.query;
+    let resultados = varinhas;
+  
+    if (material) {
+      result = resultados.filter(b => b.material.toLowerCase().includes(material.toLowerCase()));
+    }
+    res.status(200).json({
+      total: result.length,
+      data: result
     });
 });
 

@@ -3,6 +3,9 @@ import dotenv from "dotenv";
 
 import dados from "./src/data/dados.js";
 const { bruxos } = dados;
+const { varinhas } = dados;
+const { animais } = dados;
+const { pocoes } = dados;
 
 const app = express();
 app.use(express.json());
@@ -74,6 +77,97 @@ app.post("/bruxos", (req, res) => {
         data : novoBruxo
     });
 });
+app.get('/varinhas', (req, res) => {
+    const { material, nucleo, comprimento, } = req.query;
+    let resultado = varinhas;
+  
+    if (nucleo) {
+      resultado = resultado.filter(b => b.nucleo.toLowerCase().includes(nucleo.toLowerCase()));
+    }
+    if (material) {
+      resultado = resultado.filter(b => b.material.toLowerCase().includes(material.toLowerCase()));
+    }
+    if (comprimento) {
+      resultado = resultado.filter(b => b.comprimento.toLowerCase().includes(comprimento.toLowerCase()));
+    }
+    res.status(200).json({
+      total: resultado.length,
+      data: resultado
+    });
+    });
+    //material, nucleo, comprimento
+    app.post("/varinhas", (req, res) => {
+    const {material, nucleo, comprimento} = req.body;
+
+    if (!material || !nucleo || !comprimento) {
+        return res.status(400).json({
+            success: false,
+            message: "material, nucleo, comprimento são obrigatórios para uma varinha!"
+        });
+    }
+    const novavarinha = {
+
+        id : varinhas.length + 1,
+        material: material,
+        nucleo: nucleo,
+        comprimento: comprimento,
+
+    }
+
+    bruxos.push (novavarinha);
+
+    res.status(201).json({
+        success : true,
+        message : "Nova varinha adicionada a Hogwarts!",
+        data : novavarinha
+    });
+});
+app.get('/pocoes', (req, res) => {
+    const { nome, efeito, } = req.query;
+    let resultado = pocoes;
+  
+    if (nome) {
+      resultado = resultado.filter(b => b.nome.toLowerCase().includes(nome.toLowerCase()));
+    }
+    if (efeito) {
+      resultado = resultado.filter(b => b.efeito.toLowerCase().includes(efeito.toLowerCase()));
+    }
+
+    res.status(200).json({
+      total: resultado.length,
+      data: resultado
+    });
+});
+app.get('/animais', (req, res) => {
+    const { nome, tipo, } = req.query;
+    let resultado = animais;
+  
+    if (nome) {
+      resultado = resultado.filter(b => b.nome.toLowerCase().includes(nome.toLowerCase()));
+    }
+    if (tipo) {
+      resultado = resultado.filter(b => b.tipo.toLowerCase().includes(tipo.toLowerCase()));
+    }
+
+    res.status(200).json({
+      total: resultado.length,
+      data: resultado
+    });
+});
+app.get('/status', (req, res) => {
+    const { ano, } = req.query;
+    let resultado = bruxos;
+  
+    if (ano) {
+      resultado = resultado.filter(b => b.ano == ano);
+    }
+  
+    res.status(200).json({
+      total: resultado.length,
+      data: resultado
+    });
+});
+
 
 app.listen(serverPort, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${serverPort} 🚀`);
